@@ -15,6 +15,34 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Auth::routes();
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Route untuk karyawan
+Route::middleware(['auth'])->group(function () {
+    Route::get('/karyawan', function () {
+        return view('karyawan.dashboard');
+    });
+    Route::get('/karyawan/presensi', function () {
+        return view('karyawan.dashboard');
+    });
+
+Route::get('/karyawan/presensi/form', [PresensiKaryawanController::class, 'showForm'])->name('karyawan.presensi.form');
+Route::get('/karyawan/profile', [KaryawanController::class, 'profile'])->name('karyawan.profile');
+Route::post('/karyawan/presensi/store', [PresensiKaryawanController::class, 'store'])->name('karyawan.presensi.store');
+Route::put('/presensi/update', [PresensiKaryawanController::class, 'update'])->name('karyawan.presensi.update');
+Route::get('/karyawan/presensi/detail', [PresensiKaryawanController::class, 'detail'])->name('karyawan.presensi.detail');
+Route::get('/karyawan/presensi/riwayat', [PresensiKaryawanController::class, 'riwayat'])->name('karyawan.presensi.riwayat');
+
+Route::get('/karyawan/cuti', [CutiController::class, 'index'])->name('karyawan.cuti.index');
+Route::post('/karyawan/cuti', [CutiController::class, 'create'])->name('karyawan.cuti.create');
+Route::get('/karyawan/cuti/riwayat', [CutiController::class, 'history'])->name('cuti.riwayat');
+
+Route::resource('/karyawan/lembur', LemburController::class)->names('karyawan.lembur');
+// Route::get('/karyawan/lembur', [LemburController::class, 'index'])->name('karyawan.lembur.index');
+Route::post('/karyawan/lembur/create', [LemburController::class, 'create'])->name('karyawan.lembur.create');
+
+});
 
 Route::middleware(['auth', 'admin'])->group(function () {
     // Rute-rute yang hanya bisa diakses oleh admin
@@ -61,4 +89,3 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Route::post('/admin/presensi/update{id}', [PresensiAdminController::class, 'update'])->name('presensi.update');
 });
-
